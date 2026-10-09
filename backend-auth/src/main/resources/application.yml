@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: backend-auth
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ssi_auth
+
+server:
+  port: 8080
+
+jwt:
+    secret: 1234567890123456789012345678901234567890123456789012345678901234
+    expiration: 86400000
