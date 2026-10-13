@@ -349,7 +349,7 @@ function Credentials() {
               </div>
 
               <span className="inline-flex items-center rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-cyan-400 border border-cyan-500/20">
-                W3C Format
+              Issued Credential
               </span>
             </div>
 

@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import api from "../api/axios"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import {
   ShieldCheck,
@@ -34,11 +35,34 @@ function Dashboard() {
     navigate("/login")
   }
 
-  const copyDid = () => {
-    navigator.clipboard.writeText("did:ssi:fabric:7f8a91b2c34d90e1")
+  const [user, setUser] = useState(null)
+
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const response = await api.get("/api/user/me")
+      setUser(response.data)
+    } catch (error) {
+      console.error("Failed to fetch dashboard user:", error)
+    }
+  }
+
+  fetchUser()
+}, [])
+
+const copyDid = async () => {
+  if (!user?.did) return
+
+  try {
+    await navigator.clipboard.writeText(user.did)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  } catch (error) {
+    console.error("Failed to copy DID:", error)
   }
+}
+
+  
 
   const navigation = [
     {
@@ -238,7 +262,7 @@ function Dashboard() {
                   </p>
 
                   <p className="mt-2 text-2xl font-black text-white tracking-tight">
-                    Active
+                  {user ? (user.active ? "Active" : "Inactive") : "Loading..."}
                   </p>
                 </div>
 
@@ -249,7 +273,13 @@ function Dashboard() {
 
               <div className="mt-4 flex items-center gap-2 text-xs text-slate-400 font-mono">
                 <CheckCircle2 size={14} className="text-cyan-400" />
-                <span>Decentralized identity registered</span>
+                <span>
+  {user
+    ? user.active
+      ? "Identity account is active"
+      : "Identity account is inactive"
+    : "Loading identity status..."}
+</span>
               </div>
             </div>
 
@@ -262,7 +292,7 @@ function Dashboard() {
                   </p>
 
                   <p className="mt-2 text-2xl font-black text-white tracking-tight">
-                    0
+                    -
                   </p>
                 </div>
 
@@ -273,7 +303,7 @@ function Dashboard() {
 
               <div className="mt-4 flex items-center gap-2 text-xs text-slate-400 font-mono">
                 <Clock3 size={14} className="text-indigo-400" />
-                <span>Ready to receive credentials</span>
+                <span>Credential count not available</span>
               </div>
             </div>
 
@@ -286,7 +316,7 @@ function Dashboard() {
                   </p>
 
                   <p className="mt-2 text-2xl font-black text-white tracking-tight">
-                    Protected
+                  Verification Available
                   </p>
                 </div>
 
@@ -297,7 +327,7 @@ function Dashboard() {
 
               <div className="mt-4 flex items-center gap-2 text-xs text-slate-400 font-mono">
                 <Lock size={14} className="text-emerald-400" />
-                <span>Blockchain verification live</span>
+                <span>Verify credentials against the ledger</span>
               </div>
             </div>
 
@@ -350,7 +380,7 @@ function Dashboard() {
                 </div>
 
                 <p className="break-all font-mono text-sm text-cyan-300 bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-                  did:ssi:fabric:7f8a91b2c34d90e1
+                {user?.did || "Loading identity..."}
                 </p>
               </div>
 
@@ -399,69 +429,38 @@ function Dashboard() {
           </div>
 
           {/* Activity Logs Section */}
-          <div className="mt-6 rounded-2xl border border-slate-800/80 bg-slate-900/40 backdrop-blur-md overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-800/80 px-6 py-4">
-              <div>
-                <h2 className="text-base font-bold text-white tracking-tight">
-                  Recent Platform Activity
-                </h2>
+        
+<div className="mt-6 rounded-2xl border border-slate-800/80 bg-slate-900/40 backdrop-blur-md overflow-hidden">
+  <div className="flex items-center justify-between border-b border-slate-800/80 px-6 py-4">
+    <div>
+      <h2 className="text-base font-bold text-white tracking-tight">
+        Recent Platform Activity
+      </h2>
 
-                <p className="text-xs text-slate-400">
-                  Real-time cryptographic audit trail of system actions
-                </p>
-              </div>
+      <p className="text-xs text-slate-400">
+        Activity history is not connected yet
+      </p>
+    </div>
 
-              <Activity size={18} className="text-slate-400" />
-            </div>
+    <Activity size={18} className="text-slate-400" />
+  </div>
 
-            <div className="divide-y divide-slate-800/60">
-              <div className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-slate-900/50">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  <Fingerprint size={18} />
-                </div>
+  <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-800/70 border border-slate-700/60 text-slate-400">
+      <Clock3 size={22} />
+    </div>
 
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">
-                    Decentralized Identity Initialized
-                  </p>
+    <p className="mt-4 text-sm font-semibold text-white">
+      No activity history available
+    </p>
 
-                  <p className="mt-0.5 text-xs text-slate-400 truncate">
-                    Your decentralized identity was successfully generated and registered to the network.
-                  </p>
-                </div>
+    <p className="mt-1 max-w-sm text-xs leading-5 text-slate-400">
+      Actual identity, authentication, and credential events will appear here
+      when activity history is connected.
+    </p>
+  </div>
+</div>
 
-                <div className="hidden sm:flex items-center gap-2 shrink-0">
-                  <span className="inline-flex items-center rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-400 border border-cyan-500/20">
-                    Identity Active
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">Just now</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-slate-900/50">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <ShieldCheck size={18} />
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">
-                    Session Authentication Verified
-                  </p>
-
-                  <p className="mt-0.5 text-xs text-slate-400 truncate">
-                    JWT access token issued and verified through backend security guards.
-                  </p>
-                </div>
-
-                <div className="hidden sm:flex items-center gap-2 shrink-0">
-                  <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/20">
-                    JWT Active
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">Active</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
         </div>
       </main>

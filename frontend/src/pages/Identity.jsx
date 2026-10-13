@@ -168,7 +168,9 @@ function Identity() {
               </p>
 
               <p className="mt-0.5 text-xs text-slate-400">
-                Your decentralized identity is actively registered on the Hyperledger Fabric ledger.
+              {user.active
+  ? "Your identity account is active."
+  : "Your identity account is inactive."}
               </p>
             </div>
           </div>
@@ -292,7 +294,7 @@ function Identity() {
 
               <div className="mt-6 rounded-xl border border-slate-800 bg-[#060913]/90 p-4">
                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold block mb-2">
-                  Public Key (Secp256k1)
+                  Public Key 
                 </span>
                 <p className="break-all font-mono text-xs leading-relaxed text-slate-300">
                   {user.publicKey}
@@ -321,12 +323,14 @@ function Identity() {
               </h2>
 
               <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                Your decentralized identity is backed by asymmetric cryptography. The public key displayed above is shared with verifiers to validate digitally signed credentials.
-              </p>
+  The public key displayed above is identity information that may be used
+  to verify digital signatures, depending on the credential implementation.
+</p>
 
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
-                Your private signing key remains encrypted inside your secure wallet and is never exposed or transferred over the network.
-              </p>
+<p className="mt-2 text-xs leading-relaxed text-slate-400">
+  This page displays public identity information only. Private-key storage
+  and protection depend on the underlying wallet implementation.
+</p>
             </div>
           </div>
         </div>

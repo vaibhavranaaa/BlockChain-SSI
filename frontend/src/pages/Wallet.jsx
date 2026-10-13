@@ -143,7 +143,13 @@ export default function Wallet() {
               </h2>
             </div>
             <p className="text-2xl font-black text-emerald-400 tracking-tight">
-              {user?.active ? "Active" : "Inactive"}
+            <p
+  className={`text-2xl font-black tracking-tight ${
+    user?.active ? "text-emerald-400" : "text-slate-300"
+  }`}
+>
+  {user ? (user.active ? "Active" : "Inactive") : "Unavailable"}
+</p>
             </p>
             <p className="mt-2 text-xs text-slate-400">
               Your active status reported from the identity service.
@@ -223,8 +229,9 @@ export default function Wallet() {
         <div className="mt-6 flex items-center gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-xs font-mono text-amber-300/90 backdrop-blur-md">
           <Lock size={15} className="shrink-0 text-amber-400" />
           <span>
-            Your private key is protected and is never displayed or transferred on this page.
-          </span>
+  Private keys are not displayed on this page. Key storage and protection
+  depend on the underlying wallet implementation.
+</span>
         </div>
 
       </div>
